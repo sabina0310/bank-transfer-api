@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('rekening_admin', function (Blueprint $table) {
             $table->id();
+            $table->integer('id_bank');
             $table->foreign('id_bank')->references('id')->on('bank');
             $table->string('nomor_rekening');
             $table->string('atas_nama_rekening');

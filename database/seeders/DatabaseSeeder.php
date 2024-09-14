@@ -20,10 +20,12 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        DB::table('user')->insert([
-            'nama' => 'User',
-            'email' => 'user@boscod.com',
-            'password' => bcrypt('rahasia')
-        ]);
+        DB::table('user')->insert(
+            [
+                'nama' => 'User',
+                'email' => 'user@boscod.com',
+                'password' => bcrypt('rahasia')
+            ]
+        );
     }
 }

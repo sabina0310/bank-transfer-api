@@ -13,17 +13,20 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
+        // Validator input
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
+        // If validator error then send error response
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
         $credentials = $request->only('email', 'password');
 
+        // Check if data user valid 
         if (!$token = Auth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized', 'message' => 'Email/Password Salah'], 401);
         }
@@ -33,7 +36,7 @@ class AuthController extends Controller
 
     public function respondWithToken($token)
     {
-        // create refresh token using id user with custom expiry time 
+        // Create refresh token using id user with custom expiry time 
         $refreshToken = Auth::setTTL(1440)->tokenById(Auth::id());
 
         return response()->json([
@@ -45,9 +48,10 @@ class AuthController extends Controller
     public function refresh()
     {
         try {
-            // check if token valid 
+            // Check if token valid 
             JWTAuth::parseToken()->authenticate();
 
+            // Create new token also blacklist the input refresh token 
             return $this->respondWithToken(Auth::refresh(true, true));
         } catch (TokenExpiredException $e) {
             return response()->json(['error' => 'Token Expired'], 401);

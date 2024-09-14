@@ -27,13 +27,14 @@ class TransferController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        // Generate ID Transaksi with format TFYYMMDD00000
         $tanggal = Carbon::now('Asia/Jakarta')->format('ymd');
         $transaksiHariIni = TransaksiTransfer::whereDate('created_at', Carbon::today('Asia/Jakarta'))
             ->orderBy('created_at', 'desc')
             ->first();
 
         if ($transaksiHariIni) {
-            $idTransaksiTerakhir = substr($transaksiHariIni->id_transaksi, 5);
+            $idTransaksiTerakhir = substr($transaksiHariIni->id_transaksi, 8);
             $counter = intval($idTransaksiTerakhir) + 1;
         } else {
             $counter = 1;
@@ -41,6 +42,7 @@ class TransferController extends Controller
 
         $idTransaksi = 'TF' . $tanggal . str_pad($counter, 5, '0', STR_PAD_LEFT);
 
+        // Generate kode unik
         $kodeUnik = sprintf('%03d', rand(0, 999));
 
         $bankTujuan = Bank::where('nama', $request->bank_tujuan)->first();
@@ -48,7 +50,7 @@ class TransferController extends Controller
         $bankPengirim = Bank::where('nama', $request->bank_pengirim)->first();
 
         $rekeningAdmin = RekeningAdmin::where('id_bank', $bankPengirim->id)->first();
-        // dd($rekeningAdmin);
+   
         try {
             DB::connection('mysql')->beginTransaction();
 

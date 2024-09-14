@@ -14,10 +14,13 @@ return new class extends Migration
         Schema::create('transaksi_transfer', function (Blueprint $table) {
             $table->id();
             $table->string('id_transaksi');
+            $table->integer('id_user');
             $table->foreign('id_user')->references('id')->on('user');
+            $table->integer('id_bank_tujuan');
             $table->foreign('id_bank_tujuan')->references('id')->on('bank');
             $table->string('nomor_rekening_tujuan');
             $table->string('atas_nama_rekening_tujuan');
+            $table->integer('id_rekening_admin');
             $table->foreign('id_rekening_admin')->references('id')->on('rekening_admin');
             $table->integer('nilai_transfer');
             $table->integer('kode_unik');
